@@ -253,9 +253,17 @@ define jboss::instance (
 
   # Manage deploy dir, if defined
   if ($deploy_dir != "") and ($enable == true) {
+	
+	$real_deploy_dir = $jboss::version ? {
+	  '4' => "deploy",
+	  '5' => "deploy",
+	  '6' => "deploy",
+	  '7' => "deployments",
+	}
+	  
     file { "jboss_deploydir_${name}":
       ensure  => directory,
-      path    => "${instance_dir}/deploy/",
+      path    => "${instance_dir}/${real_deploy_dir}/",
       owner   => $user,
       group   => $group,
       require => Exec["Set_Jboss_Instance_Permissions_$name"],
